@@ -34,7 +34,7 @@ class Universe:
     maxp = None
     minr = 100000
     for (p,r) in self.assignment.items():
-      if r.__class__ == roles.Wolf and r.rank < minr:
+      if r.__class__ == roles.Wolf and r.rank < minr and not self.isDead(p):
         maxp = p
         minr = r.rank
     return maxp
