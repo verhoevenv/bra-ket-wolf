@@ -34,7 +34,7 @@ def expandrolelist(rolelist):
 class Multiverse:
   def __init__(self,players,rolelist):
     self.players = list(players)
-    self.rolelist = expandrolelist(rolelist)
+    self.rolelist = rolelist
     self.universes = self.generateUniverses()
     self.observations = []
     self.time = ("N",0)
@@ -57,7 +57,7 @@ class Multiverse:
 
   def generateUniverses(self):
     result = []
-    for assignment in set(permutations(self.rolelist)):
+    for assignment in set(permutations(expandrolelist(self.rolelist))):
       assignedroles = dict(zip(self.players,assignment))
       result.append(Universe(assignedroles,self))
     return result
