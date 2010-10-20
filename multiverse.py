@@ -18,6 +18,7 @@
 from universe import Universe
 import roles
 import observation
+from algorithms import next_permutation
 
 from itertools import permutations, repeat, chain
 from collections import defaultdict
@@ -57,7 +58,7 @@ class Multiverse:
 
   def generateUniverses(self):
     result = []
-    for assignment in set(permutations(expandrolelist(self.rolelist))):
+    for assignment in next_permutation(sorted(expandrolelist(self.rolelist))):
       assignedroles = dict(zip(self.players,assignment))
       result.append(Universe(assignedroles,self))
     return result
