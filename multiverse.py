@@ -33,9 +33,10 @@ def expandrolelist(rolelist):
   return result
 
 class Multiverse:
-  def __init__(self,players,rolelist):
+  def __init__(self,players,rolelist,keepFraction=1.0):
     self.players = list(players)
     self.rolelist = rolelist
+    self.toKeep = keepFraction
     self.universes = self.generateUniverses()
     self.observations = []
     self.time = ("N",0)
@@ -61,7 +62,9 @@ class Multiverse:
     for assignment in next_permutation(sorted(expandrolelist(self.rolelist))):
       assignedroles = dict(zip(self.players,assignment))
       result.append(Universe(assignedroles,self))
-    return result
+    numUniverses = int(self.toKeep * len(result))
+    filteredUniverses = random.sample(result,numUniverses)
+    return filteredUniverses
 
   def gatherAllRoleProbabilities(self):
     result = {}
