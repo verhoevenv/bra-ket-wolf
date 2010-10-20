@@ -28,6 +28,7 @@ class Main(Cmd):
     Cmd.__init__(self)
     self.players = []
     self.roles = []
+    self.keep = 1.0
     self.game = None
   def update_roles(self):
     seer = 1
@@ -38,7 +39,7 @@ class Main(Cmd):
     """Start a new game! Requires the players and roles to be set."""
     assert(self.players != [])
     assert(self.roles != [])
-    self.game = Multiverse(self.players,self.roles)
+    self.game = Multiverse(self.players,self.roles,self.keep)
   def do_players(self,s):
     """Enter a comma-separated list of players. This will also reset
     the roles list to a sensible default."""
@@ -57,6 +58,12 @@ class Main(Cmd):
       roles = [role.strip().split(" ") for role in s.split(",")]
       roles = [(role,int(count)) for [role,count] in roles]
       self.roles = roles
+  def do_keepfraction(self,s):
+    """Specify which fraction of the generated universes to keep. Defaults to 1.0."""
+    if s == "":
+      print self.keep
+    else:
+      self.keep = float(s)
   def do_state(self,s):
     """Returns the current state of the game."""
     print self.game
