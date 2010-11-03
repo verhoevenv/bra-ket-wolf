@@ -35,6 +35,7 @@ def expandrolelist(rolelist):
 class Multiverse:
   def __init__(self,players,rolelist,keepFraction=1.0):
     self.players = list(players)
+    random.shuffle(self.players)
     self.rolelist = rolelist
     self.toKeep = keepFraction
     self.universes = self.generateUniverses()
