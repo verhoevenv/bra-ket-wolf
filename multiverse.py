@@ -49,6 +49,32 @@ class Multiverse:
     univ = len(self.universes)
     return "%s\n%s\n%s\n%s\n" % (time,roles, dead, univ)
 
+  def getGoodEvilDeadTable(self,names=True):
+    if names:
+      headers = "Player Name Good Evil Dead".split(" ")
+    else:
+      headers = "Player Good Evil Dead".split(" ")
+    rows = [headers]
+    roleprobs = self.gatherAllRoleProbabilities()
+    dead = self.gatherDeadProbabilities()
+    for (i,player) in enumerate(self.players):
+      probs = roleprobs[player]
+      good = sum([v for (k,v) in probs.items() if k.alignment == roles.VillageAlignment])
+      evil = sum([v for (k,v) in probs.items() if k.alignment == roles.WolfAlignment])
+      dead = self.getDeadness(player)
+      if names:
+        rows.append([str(i+1),player,"{0:.2%}".format(good),"{0:.2%}".format(evil),"{0:.2%}".format(dead)])
+      else:
+        rows.append([str(i+1),"{0:.2%}".format(good),"{0:.2%}".format(evil),"{0:.2%}".format(dead)])
+    lens = [0] * len(headers)
+    for row in rows:
+      for (i,cell) in enumerate(row):
+        if len(cell) > lens[i]:
+          lens[i] = len(cell)
+    s = "  ".join(['{' + str(i) +':<' + str(l) + '}' for (i,l) in enumerate(lens)])
+    rowsformatted = [s.format(*row) for row in rows]
+    return "\n".join(rowsformatted)
+
   def nextPhase(self):
     if self.isNight():
       self.time = ("D",self.time[1] + 1)

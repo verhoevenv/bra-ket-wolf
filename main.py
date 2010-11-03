@@ -67,6 +67,12 @@ class Main(Cmd):
   def do_state(self,s):
     """Returns the current state of the game."""
     print self.game
+  def do_table(self,s):
+    """Returns an overview table of the distribution of good and evil."""
+    print self.game.getGoodEvilDeadTable(False)
+  def do_namedtable(self,s):
+    """Returns an overview table of the distribution of good and evil, with player names."""
+    print self.game.getGoodEvilDeadTable(True)
   def do_next(self,s):
     """Starts the next phase of the game."""
     self.game.nextPhase()
