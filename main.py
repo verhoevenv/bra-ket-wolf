@@ -74,7 +74,10 @@ class Main(Cmd):
   def do_kill(self,s):
     """kill <player>: kills a player, fixing their role."""
     assert(self.game is not None)
-    self.game.killPlayer(s)
+    if s in self.players:
+      self.game.killPlayer(s)
+    else:
+      print "Player {0:s} not found, did you mean 'attack {0:s}'?".format(s)
   def do_attack(self,s):
     """attack <player> <target>: wolf attack during night."""
     assert(self.game is not None)
