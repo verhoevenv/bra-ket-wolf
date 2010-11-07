@@ -88,15 +88,21 @@ class Main(Cmd):
     """attack <player> <target>: wolf attack during night."""
     assert(self.game is not None)
     (player,target) = s.split(" ")
-    self.game.wolfAttack(player,target)
+    if player in self.players and target in self.players:
+      self.game.wolfAttack(player,target)
+    else:
+      print "Error: player {0:s} or {1:s} not found!".format(player,target)
   def do_see(self,s):
     """see <player> <target>: seer target during night.
     Note: these are executed immediately, so according to the rules
     you should input all the wolf attacks first."""
     assert(self.game is not None)
     (player,target) = s.split(" ")
-    result = self.game.seerAlignmentVision(player,target)
-    print result
+    if player in self.players and target in self.players:
+      result = self.game.seerAlignmentVision(player,target)
+      print result
+    else:
+      print "Error: player {0:s} or {1:s} not found!".format(player,target)
   def do_save(self,s):
     """Saves the game, by default to 'current.bra-ket-wolf' but you
     can give another file name as parameter."""
