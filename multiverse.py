@@ -40,6 +40,7 @@ class Multiverse:
     self.toKeep = keepFraction
     self.universes = self.generateUniverses()
     self.observations = []
+    self.pendingObservations = []
     self.time = ("N",0)
 
   def __str__(self):
@@ -76,6 +77,7 @@ class Multiverse:
     return "\n".join(rowsformatted)
 
   def nextPhase(self):
+    self.commitObservations()
     if self.isNight():
       self.time = ("D",self.time[1] + 1)
     else:
@@ -109,23 +111,41 @@ class Multiverse:
     return dict([(p,self.getDeadness(p)) for p in self.players])
 
   def addObservation(self,observation):
+    self.pendingObservations.append(observation)
+
+  def commitObservations(self):
     keptuniverses = []
     for u in self.universes:
-      if observation.isSupportedBy(u):
+      deleteUniverse = False
+      for p in self.pendingObservations:
+        if not deleteUniverse and not p.isSupportedBy(u):
+          deleteUniverse = True
+      if not deleteUniverse:
         keptuniverses.append(u)
     self.universes = keptuniverses
-    self.observations.append(observation)
+    for p in self.pendingObservations:
+      self.observations.append(observation)
+    self.pendingObservations = []
 
   def wolfAttack(self,player,target):
-    assert(self.isNight())
+    if not self.isNight():
+        print "ERROR: Only able to perform wolf attack at night"
+        return
     for u in self.universes:
       u.wolfAttack(player,target)
     self.addObservation(observation.WolfAttackObservation(player,target))
 
   def seerAlignmentVision(self,player,target):
-    assert(self.isNight())
-    assert(not self.isDead(player))
-    assert(roles.Seer() in self.gatherRoleProbabilities(player))
+    if not self.isNight():
+        print "ERROR: Only able to perform seer alignment vision at night"
+        return
+    if self.isDead(player):
+        print "ERROR: Dead player is unable to perform seer alignment vision"
+        return
+    if not roles.Seer() in self.gatherRoleProbabilities(player):
+        print "ERROR: Player who can not be seer is unable to perform seer alignment vision"
+        return
+
     vision = self.randomUniverse().assignment[target].alignment
     self.addObservation(observation.SeerAlignmentObservation(player,target,vision))
     return vision
@@ -141,6 +161,7 @@ class Multiverse:
     for u in self.universes:
       u.killPlayer(player)
     self.addObservation(observation.TimeOfDeathObservation(player,self.time))
+    self.commitObservations()
     self.propagateDeaths()
 
   def canHaveRole(self,player,role):
@@ -156,6 +177,7 @@ class Multiverse:
           change = True
           fixedrole = self.randomUniverse().getPlayerRole(p)
           self.addObservation(observation.RoleObservation(p,fixedrole))
+          self.commitObservations()
 
   def randomUniverse(self):
     return random.choice(self.universes)
