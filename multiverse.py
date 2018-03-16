@@ -147,7 +147,16 @@ class Multiverse:
         return
 
     vision = self.randomUniverse().assignment[target].alignment
-    self.addObservation(observation.SeerAlignmentObservation(player,target,vision))
+    visionFound = False
+    for p in self.pendingObservations:
+      if p.player is player and p.target is target:
+        if not p.vision is None:
+          vision = p.vision
+          visionFound = True
+          print "This vision has already been observed this round"
+          break
+    if not visionFound:
+      self.addObservation(observation.SeerAlignmentObservation(player,target,vision))
     return vision
 
   def getDeadness(self,player):
