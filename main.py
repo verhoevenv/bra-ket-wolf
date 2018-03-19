@@ -37,8 +37,12 @@ class Main(Cmd):
     self.roles = [("Seer",seer),("Wolf",wolf),("Villager",villager)]
   def do_start(self,s):
     """Start a new game! Requires the players and roles to be set."""
-    assert(self.players != [])
-    assert(self.roles != [])
+    if self.players == []:
+        print "Unable to do start because players is empty"
+        return
+    if self.roles == []:
+        print "Unable to do start because roles is empty"
+        return
     self.game = Multiverse(self.players,self.roles,self.keep)
   def do_players(self,s):
     """Enter a comma-separated list of players. This will also reset
@@ -79,14 +83,18 @@ class Main(Cmd):
     print "It is now %s%s" % self.game.time
   def do_kill(self,s):
     """kill <player>: kills a player, fixing their role."""
-    assert(self.game is not None)
+    if self.game is None:
+        print "Unable to do kill because game is None"
+        return
     if s in self.players:
       self.game.killPlayer(s)
     else:
       print "Player {0:s} not found, did you mean 'attack {0:s}'?".format(s)
   def do_attack(self,s):
     """attack <player> <target>: wolf attack during night."""
-    assert(self.game is not None)
+    if self.game is None:
+        print "Unable to do attack because game is None"
+        return
     (player,target) = s.split(" ")
     if player in self.players and target in self.players:
       self.game.wolfAttack(player,target)
@@ -96,7 +104,9 @@ class Main(Cmd):
     """see <player> <target>: seer target during night.
     Note: these are executed immediately, so according to the rules
     you should input all the wolf attacks first."""
-    assert(self.game is not None)
+    if self.game is None:
+        print "Unable to do see because game is None"
+        return
     (player,target) = s.split(" ")
     if player in self.players and target in self.players:
       result = self.game.seerAlignmentVision(player,target)
