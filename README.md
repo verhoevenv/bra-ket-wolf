@@ -17,7 +17,6 @@ The current implementation has the villager, werewolf and seer roles.
 * Usability
   * better parsing (like player names)
   * 'state' command could give some more information about what it's displaying
-  * don't crash because of failed assertions
   * feedback when entering state-changing commands like 'attack' or 'kill'
   * undo command
   * warnings on overwriting save files
